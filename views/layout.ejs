@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title><%= typeof title !== 'undefined' ? title : "Water Billing System" %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <header>
+      
+    </header>
+    <div class="buttons">
+      <% if (!user) { %>
+      <a href="/register" class="btn">Register</a>
+      <a href="/login" class="btn">Login</a>
+      <a href="/login" class="btn">Admin Login</a>
+      <!-- Admin Login Button -->
+      <% } else { %>
+      <a href="/dashboard" class="btn">Go to Dashboard</a>
+      <% if (user.role === "admin") { %>
+      <a href="/admin" class="btn">Admin Panel</a>
+      <!-- Admin Panel Button -->
+      <% } %>
+      <a href="/logout" class="btn">Logout</a>
+      <% } %>
+    
+
+    <main><%- body %></main>
+
+    <footer>
+      <p>&copy; 2025 Water Billing System</p>
+    </footer>
+  </body>
+</html>

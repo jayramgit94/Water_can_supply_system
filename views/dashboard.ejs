@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+  />
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --fg: #1f1f1f;
+      --primary: #4f46e5;
+      --secondary: #6b7280;
+      --accent: #10b981;
+      --card: #ffffff;
+      --border: #e5e7eb;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111827;
+        --fg: #f3f4f6;
+        --primary: #6366f1;
+        --secondary: #9ca3af;
+        --accent: #34d399;
+        --card: #1f2937;
+        --border: #374151;
+      }
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: "Inter", sans-serif;
+      background-color: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    h1,
+    h2 {
+      color: var(--primary);
+    }
+
+    form,
+    table,
+    .card {
+      background-color: var(--card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    label {
+      display: block;
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      background-color: var(--bg);
+      color: var(--fg);
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--accent);
+      border: none;
+      border-radius: 0.375rem;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #059669;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg);
+      color: var(--secondary);
+      text-transform: uppercase;
+      font-size: 0.875rem;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+
+      table,
+      form {
+        font-size: 0.9rem;
+      }
+
+      input,
+      button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+
+  <body>
+    <h1>Welcome, <%= user.name %>!</h1>
+    <p>Your email: <%= user.email %></p>
+    <p>Total cans ordered: <%= user.canCount %></p>
+    <p>Monthly total: <%= user.monthlyTotal %></p>
+
+    <h2>Add Water Cans</h2>
+    <form action="/dashboard/add-cans" method="POST">
+      <label for="countChanged">Number of Cans:</label>
+      <input type="number" id="countChanged" name="countChanged" required />
+      <br />
+      <label for="price">Total Price:</label>
+      <input type="number" id="price" name="price" required />
+      <br />
+      <button type="submit">Add Cans</button>
+    </form>
+
+    <h2>Can History</h2>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Cans Added</th>
+        <th>Total Cans</th>
+        <th>Total Price</th>
+      </tr>
+      <% user.canHistory.forEach((entry) => { %>
+      <tr>
+        <td><%= entry.date.toDateString() %></td>
+        <td><%= entry.countChanged %></td>
+        <td><%= entry.totalCans %></td>
+        <td><%= entry.totalPrice %></td>
+      </tr>
+      <% }) %>
+    </table>
+    <a href="/back">back</a>
+    <a href="/logout">Logout</a>
+  </body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 2rem;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 1rem;
+      }
+
+      .summary {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background-color: #fff;
+        padding: 1rem 2rem;
+        margin: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        flex: 1 1 200px;
+        text-align: center;
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 2rem;
+        color: #007bff;
+      }
+
+      .card p {
+        margin: 0.5rem 0 0;
+        color: #555;
+      }
+
+      .search-bar {
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .search-bar input {
+        padding: 0.5rem;
+        width: 300px;
+        max-width: 90%;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+        vertical-align: top;
+      }
+
+      th {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:hover {
+        background-color: #f1f9ff;
+      }
+
+      ul {
+        padding-left: 1rem;
+        margin: 0;
+        list-style: disc;
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: #dc3545;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #c82333;
+      }
+
+      @media (max-width: 768px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+        thead {
+          display: none;
+        }
+        tr {
+          margin-bottom: 1.5rem;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          background-color: white;
+          padding: 1rem;
+        }
+        td {
+          position: relative;
+          padding-left: 50%;
+        }
+        td::before {
+          position: absolute;
+          top: 1rem;
+          left: 1rem;
+          width: 45%;
+          white-space: nowrap;
+          font-weight: bold;
+          color: #555;
+        }
+        td:nth-of-type(1)::before {
+          content: "Name";
+        }
+        td:nth-of-type(2)::before {
+          content: "Email";
+        }
+        td:nth-of-type(3)::before {
+          content: "Role";
+        }
+        td:nth-of-type(4)::before {
+          content: "Total Cans";
+        }
+        td:nth-of-type(5)::before {
+          content: "Monthly Total";
+        }
+        td:nth-of-type(6)::before {
+          content: "Can History";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Admin Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="summary">
+      <div class="card">
+        <h2><%= users.length %></h2>
+        <p>Total Users</p>
+      </div>
+      <div class="card">
+        <h2><%= users.reduce((acc, u) => acc + u.canCount, 0) %></h2>
+        <p>Total Cans Used</p>
+      </div>
+      <div class="card">
+        <h2>
+          ₹<%= users.reduce((acc, u) => acc + u.monthlyTotal, 0).toFixed(2) %>
+        </h2>
+        <p>Monthly Revenue</p>
+      </div>
+      <div class="card">
+        <h2>
+          ₹<%= ( users.reduce((acc, u) => acc + u.monthlyTotal, 0) /
+          users.length ).toFixed(2) %>
+        </h2>
+        <p>Avg. Revenue/User</p>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by name or email..."
+        onkeyup="filterTable()"
+      />
+    </div>
+
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Total Cans</th>
+          <th>Monthly Total</th>
+          <th>Can History</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user) => { %>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.role %></td>
+          <td><%= user.canCount %></td>
+          <td>₹<%= user.monthlyTotal.toFixed(2) %></td>
+          <td>
+            <ul>
+              <% user.canHistory.forEach((entry) => { %>
+              <li>
+                <strong>Date:</strong> <%= new Date(entry.date).toDateString()
+                %>, <strong>Cans:</strong> <%= entry.countChanged %>,
+                <strong>Total:</strong> <%= entry.totalCans %>,
+                <strong>Price:</strong> ₹<%= entry.totalPrice %>
+              </li>
+              <% }) %>
+            </ul>
+          </td>
+          <td>
+            <!-- View Button -->
+            <a href="/user/<%= user._id %>" class="btn">View</a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <!-- JavaScript for Search -->
+    <script>
+      function filterTable() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const rows = document.querySelectorAll("#userTable tbody tr");
+
+        rows.forEach((row) => {
+          const name = row.cells[0].textContent.toLowerCase();
+          const email = row.cells[1].textContent.toLowerCase();
+
+          if (name.includes(input) || email.includes(input)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

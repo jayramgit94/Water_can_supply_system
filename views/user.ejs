@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+      }
+      th {
+        background-color: #f5f5f5;
+      }
+      .btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #2980b9;
+      }
+      .action-btn {
+        background-color: #f39c12;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      .action-btn:hover {
+        background-color: #e67e22;
+      }
+      .delete-btn {
+        background-color: #e74c3c;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .delete-btn:hover {
+        background-color: #c0392b;
+      }
+      .timestamp {
+        font-size: 0.85em;
+        color: #7f8c8d;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><%= user.name %>'s Details</h1>
+    <!-- Displaying the username here -->
+    <p><strong>Name:</strong> <%= user.name %></p>
+    <p><strong>Email:</strong> <%= user.email %></p>
+    <p><strong>Role:</strong> <%= user.role %></p>
+    <p><strong>Total Cans:</strong> <%= user.canCount %></p>
+    <p><strong>Monthly Total:</strong> ₹<%= user.monthlyTotal %></p>
+
+    <!-- Edit Cans Section -->
+    <div>
+      <form action="/user/<%= user._id %>/update-cans" method="POST">
+        <label for="countChanged">Edit Cans (Min/Plus):</label>
+        <input
+          type="number"
+          id="countChanged"
+          name="countChanged"
+          min="1"
+          required
+        />
+        <button type="submit" class="action-btn">Update Cans</button>
+      </form>
+    </div>
+
+    <!-- Delete User Button -->
+    <form
+      action="/user/<%= user._id %>/delete"
+      method="POST"
+      style="margin-top: 20px"
+    >
+      <button type="submit" class="delete-btn">Delete User</button>
+    </form>
+
+    <h2>Can History</h2>
+    <% if (user.canHistory.length > 0) { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Cans Added</th>
+          <th>Total Cans</th>
+          <th>Total Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% user.canHistory.forEach((entry) => { %>
+        <tr>
+          <td>
+            <%= new Date(entry.date).toLocaleString() %>
+            <span class="timestamp"
+              >(Time: <%= new Date(entry.date).toLocaleTimeString() %>)</span
+            >
+          </td>
+          <td><%= entry.countChanged %></td>
+          <td><%= entry.totalCans %></td>
+          <td>₹<%= entry.totalPrice %></td>
+          <td>
+            <!-- Add action buttons for editing if required -->
+            <a
+              href="/user/<%= user._id %>/edit-can-history/<%= entry._id %>"
+              class="action-btn"
+              >Edit</a
+            >
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% } else { %>
+    <p>No can history available.</p>
+    <% } %>
+
+    <a href="/users" class="btn">Back to Users</a>
+  </body>
+</html>
